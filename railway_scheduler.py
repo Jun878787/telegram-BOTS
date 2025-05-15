@@ -7,6 +7,7 @@ import sys
 import time
 import datetime
 import argparse
+import json
 
 # 相關配置，請替換成您的實際資訊
 API_KEY = os.environ.get("RAILWAY_API_KEY", "")  # 從環境變數獲取或手動設置
@@ -84,4 +85,19 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()
+
+# 車隊總帳機器人
+with open("fleet_accounting_data.json", "w") as f:
+    json.dump(data, f)
+
+# 業績管家機器人1
+with open("performance_manager_1_data.json", "w") as f:
+    json.dump(data, f)
+
+# 車隊總帳機器人
+updater.start_webhook(listen="0.0.0.0", port=PORT, url_path="bot1_webhook")
+updater.bot.set_webhook("https://您的域名/bot1_webhook")
+
+# 業績管家機器人1
+updater.start_webhook(listen="0.0.0.0", port=PORT, url_path="bot2_webhook") 
