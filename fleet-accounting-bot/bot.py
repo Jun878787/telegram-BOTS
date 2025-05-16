@@ -1,65 +1,65 @@
-import telebot
-import logging
-from datetime import datetime
-import os
-import re
-import time
-import threading
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
-from accounting import Accounting
-from keyboard import get_main_menu, get_history_menu, get_rate_setting_menu, get_admin_menu
-from keyboard import get_delete_records_menu, get_confirmation_keyboard, get_back_to_main_button, get_transaction_buttons
-import dotenv
+“± ± person”
+“1”
+| | 
+| * 。
+字 字
+字 字
+字 字
+| || ##、#、#、-
+| | 
+“ “ get_main_menu”,get_history_menu,get_rate_setting_menu,get_admin_menu”
+“ “get_delete_records_menu”,get_confirmation_keyboard,get_back_to_main_button,get_transaction_buttons”
+字 字
 
-# 載入環境變數
-dotenv.load_dotenv()
+### 
+. 。 。 . 。´ _ ()
 
-# 初始化機器人
-bot_token = os.environ.get('TELEGRAM_BOT_TOKEN', '7695972838:AAGGf6AnG7WpKvYhaZm-40X3iM-HiEkvjQg')
-bot = telebot.TeleBot(bot_token)
-accounting = Accounting()
+## 人物
+bot_token = = 。("_____", '7695972838:AAGGf6AnG7WpKvYhaZm-40X3iM-HiEkvjQg')
+* ==,個人,。(bot_token)
+= 。()
 
-# 設置日誌記錄
-if not os.path.exists('logs'):
-    os.makedirs('logs')
-current_date = datetime.now().strftime('%Y-%m-%d')
-log_file = f'logs/bot_log_{current_date}.txt'
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(message)s',
-    handlers=[
-        logging.FileHandler(log_file, encoding='utf-8'),
-        logging.StreamHandler()
+#9
+| | = 。 . 。Ø("你"):
+ * 。("你")
+_日月=。 . 。Ø().。('%Y-%m-%d')
+IUCH_文字= f'logs/bot_log_{_ }. 。。txt'
+..(
+ = *
+ ="%（asctime）-%（）",
+ “”=[
+ 。文字:。(文字,="utf-8"),
+ ..()
     ]
 )
-logger = logging.getLogger('BotLogger')
+=...。("你")
 
-# 使用者狀態字典，用於跟踪用戶當前的操作狀態
-user_states = {}
+## 
+_= {}
 
-# 狀態常量
-STATE_IDLE = 'idle'  # 空閒狀態
-STATE_WAITING_RATE = 'waiting_rate'  # 等待輸入匯率
-STATE_WAITING_ADDRESS = 'waiting_address'  # 等待輸入地址
-STATE_WAITING_WELCOME = 'waiting_welcome'  # 等待輸入歡迎詞
-STATE_WAITING_ADMIN = 'waiting_admin'  # 等待輸入管理員
-STATE_WAITING_OPERATOR = 'waiting_operator'  # 等待輸入操作員
+##
+__= ''  ##
+STATE_WAITING_RATE = "__### 
+___地址= "_### 
+____= "__### 
+STATE_WAITING_ADMIN = "___### 
+STATE_WAITING_OPERATOR = "__### 
 
-# 機器人心跳和啟動狀態
-bot_running = False
-heartbeat_thread = None
+###
+bot_running = * 在
+__= [0070]
 
-def start_heartbeat():
-    """啟動心跳檢測線程"""
-    def heartbeat():
-        while bot_running:
-            logger.info("機器人心跳檢測：正常運行中...")
-            time.sleep(300)  # 每5分鐘檢測一次
+. 。。_ 。():
+ 」 」
+ 【 】 ():
+ “± person”_running:
+ 。("我個人同意:...")
+ .#(300)##5#1
     
-    global heartbeat_thread
-    heartbeat_thread = threading.Thread(target=heartbeat)
-    heartbeat_thread.daemon = True
-    heartbeat_thread.start()
+ | __
+ __==(==)
+ __。× = × 
+ __。()
 
 def log_message(message, action_type="一般消息"):
     """記錄消息到日誌"""
