@@ -137,7 +137,7 @@ async def main_v20():
     application.add_handler(CommandHandler("acc_status", status_command_v20))
     
     # 註冊消息處理器
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.command, handle_message_v20))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message_v20))
     
     # 啟動機器人
     # 檢查是否在 Railway 環境中
@@ -163,7 +163,7 @@ async def main_v20():
     
     # 保持機器人運行
     await application.updater.idle()
-
+ 
 def main_v13():
     """啟動機器人 (v13.x)"""
     if not TOKEN:
