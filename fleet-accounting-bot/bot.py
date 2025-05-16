@@ -23,15 +23,15 @@ except ImportError:
         # 設置版本標記
         PTB_VERSION_20 = False
     except ImportError as e:
-        if "Filters" in str(e):
-            print("錯誤：請安裝 python-telegram-bot 13.x 或 20.x 版本")
-            print("執行：pip install python-telegram-bot==13.15")
-            print("或： pip install python-telegram-bot==20.6")
+        if 'Filters' in str(e):
+            print('錯誤：請安裝 python-telegram-bot 13.x 或 20.x 版本')
+            print('執行：pip install python-telegram-bot==13.15')
+            print('或： pip install python-telegram-bot==20.6')
             sys.exit(1)
-        elif "imghdr" in str(e):
-            print("錯誤：Python 3.13+ 不支援 imghdr 模塊")
-            print("請使用 python-telegram-bot 20.x 版本")
-            print("執行：pip install python-telegram-bot==20.6")
+        elif 'imghdr' in str(e):
+            print('錯誤：Python 3.13+ 不支援 imghdr 模塊')
+            print('請使用 python-telegram-bot 20.x 版本')
+            print('執行：pip install python-telegram-bot==20.6')
             sys.exit(1)
         else:
             raise e
@@ -42,160 +42,160 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # 從環境變數獲取配置
-TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-PORT = int(os.environ.get("PORT", 8080))
-TZ = os.environ.get("TZ", "Asia/Taipei")
+TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
+PORT = int(os.environ.get('PORT', 8080))
+TZ = os.environ.get('TZ', 'Asia/Taipei')
 
 # v20.x 版本的命令處理函數
 async def start_command_v20(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """處理 /acc_start 命令 (v20.x)"""
+    '''處理 /acc_start 命令 (v20.x)'''
     await update.message.reply_text('車隊總帳機器人已啟動！使用 /acc_help 查看可用命令。')
 
 async def help_command_v20(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """處理 /acc_help 命令 (v20.x)"""
-    help_text = """
+    '''處理 /acc_help 命令 (v20.x)'''
+    help_text = '''
 車隊總帳機器人指令清單:
 /acc_start - 啟動機器人
 /acc_help - 顯示此幫助信息
 /acc_status - 顯示機器人狀態
-    """
+    '''
     await update.message.reply_text(help_text)
 
 async def status_command_v20(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """處理 /acc_status 命令 (v20.x)"""
+    '''處理 /acc_status 命令 (v20.x)'''
     current_time = datetime.datetime.now(pytz.timezone(TZ))
-    uptime = f"{current_time.strftime('%Y-%m-%d %H:%M:%S %Z')}"
-    status_text = f"機器人正在運行\n當前時間: {uptime}"
+    uptime = f'{current_time.strftime('%Y-%m-%d %H:%M:%S %Z')}'
+    status_text = f'機器人正在運行\n當前時間: {uptime}'
     await update.message.reply_text(status_text)
 
 async def handle_message_v20(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """處理普通消息 (v20.x)"""
+    '''處理普通消息 (v20.x)'''
     text = update.message.text
     # 僅處理特定前綴的消息
-    if text.startswith("車隊:") or text.startswith("總帳:"):
-        await update.message.reply_text(f"收到消息：{text}")
+    if text.startswith('車隊:') or text.startswith('總帳:'):
+        await update.message.reply_text(f'收到消息：{text}')
 
 # v13.x 版本的命令處理函數
 def start_command_v13(update, context):
-    """處理 /acc_start 命令 (v13.x)"""
+    '''處理 /acc_start 命令 (v13.x)'''
     update.message.reply_text('車隊總帳機器人已啟動！使用 /acc_help 查看可用命令。')
 
 def help_command_v13(update, context):
-    """處理 /acc_help 命令 (v13.x)"""
-    help_text = """
+    '''處理 /acc_help 命令 (v13.x)'''
+    help_text = '''
 車隊總帳機器人指令清單:
 /acc_start - 啟動機器人
 /acc_help - 顯示此幫助信息
 /acc_status - 顯示機器人狀態
-    """
+    '''
     update.message.reply_text(help_text)
 
 def status_command_v13(update, context):
-    """處理 /acc_status 命令 (v13.x)"""
+    '''處理 /acc_status 命令 (v13.x)'''
     current_time = datetime.datetime.now(pytz.timezone(TZ))
-    uptime = f"{current_time.strftime('%Y-%m-%d %H:%M:%S %Z')}"
-    status_text = f"機器人正在運行\n當前時間: {uptime}"
+    uptime = f'{current_time.strftime('%Y-%m-%d %H:%M:%S %Z')}'
+    status_text = f'機器人正在運行\n當前時間: {uptime}'
     update.message.reply_text(status_text)
 
 def handle_message_v13(update, context):
-    """處理普通消息 (v13.x)"""
+    '''處理普通消息 (v13.x)'''
     text = update.message.text
     # 僅處理特定前綴的消息
-    if text.startswith("車隊:") or text.startswith("總帳:"):
-        update.message.reply_text(f"收到消息：{text}")
+    if text.startswith('車隊:') or text.startswith('總帳:'):
+        update.message.reply_text(f'收到消息：{text}')
 
 async def main_v20():
-    """啟動機器人 (v20.x)"""
+    '''啟動機器人 (v20.x)'''
     if not TOKEN:
-        logger.error("未設置 TELEGRAM_BOT_TOKEN 環境變數")
+        logger.error('未設置 TELEGRAM_BOT_TOKEN 環境變數')
         sys.exit(1)
         
     # 創建應用
     application = Application.builder().token(TOKEN).build()
     
     # 註冊命令處理器
-    application.add_handler(CommandHandler("acc_start", start_command_v20))
-    application.add_handler(CommandHandler("acc_help", help_command_v20))
-    application.add_handler(CommandHandler("acc_status", status_command_v20))
+    application.add_handler(CommandHandler('acc_start', start_command_v20))
+    application.add_handler(CommandHandler('acc_help', help_command_v20))
+    application.add_handler(CommandHandler('acc_status', status_command_v20))
     
     # 註冊消息處理器
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message_v20))
     
     # 啟動機器人
     # 檢查是否在 Railway 環境中
-    railway_env = os.environ.get("RAILWAY_STATIC_URL") or os.environ.get("RAILWAY_PUBLIC_DOMAIN")
+    railway_env = os.environ.get('RAILWAY_STATIC_URL') or os.environ.get('RAILWAY_PUBLIC_DOMAIN')
     
     if railway_env:
         # Railway 環境下使用 webhook
         # 包含獨特路徑以避免與其他機器人衝突
-        webhook_path = f"fleet-acc-webhook-{TOKEN[-8:]}"
-        webhook_url = f"{railway_env}/{webhook_path}"
+        webhook_path = f'fleet-acc-webhook-{TOKEN[-8:]}'
+        webhook_url = f'{railway_env}/{webhook_path}'
         
-        logger.info(f"在 Railway 環境使用 webhook 模式，webhook URL: {webhook_url}")
+        logger.info(f'在 Railway 環境使用 webhook 模式，webhook URL: {webhook_url}')
         await application.bot.set_webhook(url=webhook_url)
         await application.start()
     else:
         # 本地環境下使用輪詢
-        logger.info("在本地環境使用輪詢模式")
+        logger.info('在本地環境使用輪詢模式')
         await application.initialize()
         await application.start()
         await application.updater.start_polling()
     
-    logger.info("車隊總帳機器人已啟動")
+    logger.info('車隊總帳機器人已啟動')
     
-    # 保持機器人運行
-    await application.updater.idle()
+ ## ### 你來了
+ # # ()。# 響應。.。()
 
-def main_v13():
-    """啟動機器人 (v13.x)"""
-    if not TOKEN:
-        logger.error("未設置 TELEGRAM_BOT_TOKEN 環境變數")
-        sys.exit(1)
+。 _v13():
+    "''the person（v13。x）'''"
+ | |
+ 。[0070] ("y co_BOT_TOKEN “)
+ #西菲克1】
         
-    # 創建更新器
-    updater = Updater(TOKEN, use_context=True)
+ ##
+ *= [0070]（thro,whipface_context=throxt）
     
-    # 獲取調度器註冊處理器
-    dp = updater.dispatcher
+ # “”
+ dp = ×。
     
-    # 註冊命令處理器
-    dp.add_handler(CommandHandler("acc_start", start_command_v13))
-    dp.add_handler(CommandHandler("acc_help", help_command_v13))
-    dp.add_handler(CommandHandler("acc_status", status_command_v13))
+ # “”
+ dp。*__準備(*"acc__",+___v13))
+ dp。*__準備(*"acc__",+___v13))
+ dp。*__準備(*"acc__",+___v13))
     
-    # 註冊消息處理器
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message_v13))
+ # “”
+ dps“_”,“,”(“NEF”。文字&~y SEC“,“___v13”)
     
-    # 啟動機器人
-    # 檢查是否在 Railway 環境中
-    railway_env = os.environ.get("RAILWAY_STATIC_URL") or os.environ.get("RAILWAY_PUBLIC_DOMAIN")
+ ## 人物
+ #### 中
+ 鐵路_env = = ELEX。("y___URL") | * 。[0070] ("+__事物__")
     
-    if railway_env:
-        # Railway 環境下使用 webhook
-        # 包含獨特路徑以避免與其他機器人衝突
-        webhook_path = f"fleet-acc-webhook-{TOKEN[-8:]}"
-        webhook_url = f"{railway_env}/{webhook_path}"
+ | _env:
+ # #ryprace #
+ ## ||個人
+ webhook_path = f'fleet-acc-webhook-{代幣[-8:]}'
+ webhook_url = f'{鐵路_env}/{webhook_path}'
         
-        logger.info(f"在 Railway 環境使用 webhook 模式，webhook URL: {webhook_url}")
-        updater.start_webhook(listen="0.0.0.0",
-                              port=PORT,
-                              url_path=webhook_path,
-                              webhook_url=webhook_url)
-    else:
-        # 本地環境下使用輪詢
-        logger.info("在本地環境使用輪詢模式")
-        updater.start_polling(drop_pending_updates=True)
+ 記錄員。資訊（f'鐵路 #present webhook #,webhook URL:{webhook_url}')
+ 更新程式。start_webhook（='0。0。0。0',
+ ==。
+ url_path=webhook_path,
+ _url=webhook_url）
+ :
+ # 樂透
+ 記錄員。資訊("asposurchychipration")
+ 。start_polling（drop_pending_updates=true）
     
-    logger.info("車隊總帳機器人已啟動")
+ 記錄員。資訊("誰的公民")
     
-    # 運行機器人直到按Ctrl-C
-    updater.idle()
+ ### #ciplesctrl-C
+ 。空閒()
 
-if __name__ == '__main__':
-    if PTB_VERSION_20:
-        logger.info("使用 python-telegram-bot v20.x")
-        import asyncio
-        asyncio.run(main_v20())
-    else:
-        logger.info("使用 python-telegram-bot v13.x")
-        main_v13()
+“__name__”== '__主__':
+ #PTB_VERSION_20:
+ 記錄員。資訊('@python-telegram-bot v20。x')
+ 噢,異步
+ 異步。run（main_v20())
+ :
+ 記錄員。資訊('@python-telegram-bot v13。x')
+ _v13()
