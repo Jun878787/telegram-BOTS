@@ -1,11 +1,11 @@
-[build]
-builder = "NIXPACKS"
-buildCommand = "pip install -r requirements.txt"
+[建造]
+建設者 = "尼克斯包"
+建置命令 = "pip 安裝 -r 要求。txt"
 
-[deploy]
-startCommand = "python bot.py"
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
+[部署]
+啟動命令 = "python bot。py"
+重新啟動策略類型 = "ON_FAILURE"
+重新啟動策略最大行程 = 10
 
-[nixpacks]
-framework = "python" 
+[尼克斯包]
+框架 = "蟒蛇" 
