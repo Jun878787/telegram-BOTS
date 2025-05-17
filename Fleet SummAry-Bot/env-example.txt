@@ -1,19 +1,18 @@
-# 車隊總表機器人 (Fleet SummAry-Bot) 環境變數範例
-TELEGRAM_BOT_TOKEN=7205575949:AAHLA8VpXWBJXhPe9riEym6aOaAvojw_UWw
+# 這是 telegram 機器人環境變數範例檔案
+# 複製此檔案為 .env，然後填入您的設定
+
+# Telegram 機器人令牌，從 BotFather 獲取
+TELEGRAM_BOT_TOKEN=8076453380:AAHnaGkOtryyS-KecrnXcSq0agPclRTrUkQ
 
 # Railway API (用於設定啟動/關閉時間)
-RAILWAY_API_KEY=8e48c716-7fd3-4372-afe8-1e3e60c218db
-SERVICE_ID=d82f533f-e9f7-4e3f-86e2-5b3133fac13a
+RAILWAY_API_KEY=your_railway_api_key_here
+FLEET_ACCOUNTING_SERVICE_ID=your_service_id_here
 
-# 運行端口
-PORT=8080
-
-# 時區設定
+# 設定時區
 TZ=Asia/Taipei
 
-# 群組與管理員設定
-TARGET_GROUP_ID=-1002557176274
-ADMIN_IDS=7842840472
+# 服務器端口（用於 Webhook）
+PORT=8080
 
 # 其他配置
 DEBUG=False 
