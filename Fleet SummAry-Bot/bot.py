@@ -5,9 +5,6 @@
 import telebot
 import re
 from datetime import datetime, timedelta
-from config import Config
-from accounting import Accounting
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import json
 import os
 import logging
@@ -19,8 +16,19 @@ if not TOKEN:
     TOKEN = "7205575949:AAHLA8VpXWBJXhPe9riEym6aOaAvojw_UWw"
     print("警告：未設置TELEGRAM_BOT_TOKEN環境變數，使用硬編碼的token")
 
-# 初始化機器人和配置
+# 初始化機器人
 bot = telebot.TeleBot(TOKEN)
+
+# 簡化版本的 config 和 accounting 類
+class Config:
+    def __init__(self):
+        self.data = {}
+        
+class Accounting:
+    def __init__(self):
+        self.data = {}
+
+# 創建實例
 config = Config()
 accounting = Accounting()
 
@@ -74,11 +82,9 @@ def log_message(message, action_type="一般消息"):
     except Exception as e:
         logger.error(f"記錄消息時發生錯誤：{str(e)}")
 
-# 移除不需要的代碼
-# // ... existing code ...
-
 # 創建鍵盤按鈕
 def create_keyboard():
+    from telebot.types import ReplyKeyboardMarkup, KeyboardButton
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(
         KeyboardButton('📜歷史帳單'),
@@ -91,4 +97,22 @@ def create_keyboard():
     )
     return keyboard
 
-# // ... existing code ...
+# 基本命令處理
+@bot.message_handler(commands=['start'])
+def handle_start(message):
+    bot.reply_to(message, "車隊總表機器人已啟動!")
+    
+@bot.message_handler(commands=['help'])
+def handle_help(message):
+    bot.reply_to(message, "車隊總表機器人幫助指令")
+
+# 啟動機器人
+def main():
+    print("啟動車隊總表機器人...")
+    try:
+        bot.polling(none_stop=True)
+    except Exception as e:
+        print(f"發生錯誤: {e}")
+        
+if __name__ == "__main__":
+    main()

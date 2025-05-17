@@ -1,45 +1,39 @@
 """
-Recognize image file formats based on their first few bytes.
-
-This is a simplified version of the imghdr module to address import issues.
+簡化版本的 imghdr 模組，用於檢測圖像文件類型。
 """
 
 __all__ = ["what"]
 
 def what(file, h=None):
     """
-    Recognize the type of an image file.
+    檢測圖像類型。
+    
+    參數:
+        file: 文件名或文件對象
+        h: 可選的文件頭
+        
+    返回:
+        圖像類型字符串，或 None 如果檢測失敗
     """
     if h is None:
         if isinstance(file, str):
             with open(file, 'rb') as f:
                 h = f.read(32)
         else:
-            try:
-                location = file.tell()
-                h = file.read(32)
-                file.seek(location)
-            except (AttributeError, OSError):
-                return None
+            location = file.tell()
+            h = file.read(32)
+            file.seek(location)
     
-    # JPEG
-    if h[0:2] == b'\xff\xd8':
+    if h.startswith(b'\xff\xd8'):
         return 'jpeg'
-    
-    # PNG
-    if h[:8] == b'\x89PNG\r\n\x1a\n':
+    elif h.startswith(b'\x89PNG\r\n\x1a\n'):
         return 'png'
-    
-    # GIF
-    if h[:6] in (b'GIF87a', b'GIF89a'):
+    elif h.startswith(b'GIF87a') or h.startswith(b'GIF89a'):
         return 'gif'
-    
-    # TIFF
-    if h[0:2] in (b'MM', b'II'):
-        return 'tiff'
-    
-    # WebP
-    if h[0:4] == b'RIFF' and h[8:12] == b'WEBP':
+    elif h.startswith(b'BM'):
+        return 'bmp'
+    elif h.startswith(b'WEBP'):
         return 'webp'
-    
-    return None 
+    return None
+
+tests = [] 

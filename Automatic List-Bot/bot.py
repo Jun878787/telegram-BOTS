@@ -9,6 +9,13 @@ import time
 import datetime
 import pytz
 
+# 嘗試從 dotenv 加載環境變數
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 # 調試輸出
 print("腳本啟動 - 調試輸出")
 print(f"當前路徑: {os.getcwd()}")
@@ -20,6 +27,10 @@ logger = logging.getLogger(__name__)
 
 # 從環境變數獲取配置
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+if not TOKEN:
+    TOKEN = "7946349508:AAGyixEKL0PCQv6J_F7FNljVnndR1PUE8yg"
+    print("警告：未設置TELEGRAM_BOT_TOKEN環境變數，使用硬編碼的token")
+
 PORT = int(os.environ.get("PORT", 8080))
 TZ = os.environ.get("TZ", "Asia/Taipei")
 
