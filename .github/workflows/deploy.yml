@@ -1,0 +1,39 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+      
+      - name: Deploy Automatic List-Bot to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+        run: |
+          cd Automatic\ List-Bot
+          railway up
+      
+      - name: Deploy Fleet SummAry-Bot to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+        run: |
+          cd Fleet\ SummAry-Bot
+          railway up
+      
+      - name: Deploy Performance General List-Bot to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+        run: |
+          cd Performance\ General\ List-Bot
+          railway up 

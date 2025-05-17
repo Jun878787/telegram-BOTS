@@ -1,0 +1,19 @@
+# 組別總表機器人 (Performance General List-Bot) 環境變數範例
+TELEGRAM_BOT_TOKEN=7582678588:AAGrU4u06xT8qP-t0L4TZE0BmJf9N44L2Hg
+
+# Railway API (用於設定啟動/關閉時間)
+RAILWAY_API_KEY=8e48c716-7fd3-4372-afe8-1e3e60c218db
+SERVICE_ID=d08978ea-90c6-4a9e-8a36-cc2f3319d3e7
+
+# 運行端口
+PORT=8080
+
+# 時區設定
+TZ=Asia/Taipei
+
+# 群組與管理員設定
+TARGET_GROUP_ID=-1002557176274
+ADMIN_IDS=7842840472
+
+# 其他配置
+DEBUG=False 

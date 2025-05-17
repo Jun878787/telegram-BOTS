@@ -1,0 +1,19 @@
+# 車隊總表機器人 (Fleet SummAry-Bot) 環境變數範例
+TELEGRAM_BOT_TOKEN=7205575949:AAHLA8VpXWBJXhPe9riEym6aOaAvojw_UWw
+
+# Railway API (用於設定啟動/關閉時間)
+RAILWAY_API_KEY=8e48c716-7fd3-4372-afe8-1e3e60c218db
+SERVICE_ID=d82f533f-e9f7-4e3f-86e2-5b3133fac13a
+
+# 運行端口
+PORT=8080
+
+# 時區設定
+TZ=Asia/Taipei
+
+# 群組與管理員設定
+TARGET_GROUP_ID=-1002557176274
+ADMIN_IDS=7842840472
+
+# 其他配置
+DEBUG=False 

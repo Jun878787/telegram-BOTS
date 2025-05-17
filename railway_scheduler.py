@@ -14,7 +14,7 @@ API_KEY = os.environ.get("RAILWAY_API_KEY", "")  # 從環境變數獲取或手�
 SERVICE_IDS = {
     "fleet-accounting": os.environ.get("FLEET_ACCOUNTING_SERVICE_ID", ""),
     "performance-manager-1": os.environ.get("PERFORMANCE_MANAGER_1_SERVICE_ID", ""),
-    "performance-manager-2": os.environ.get("PERFORMANCE_MANAGER_2_SERVICE_ID", "")
+    "automatic-list": os.environ.get("AUTOMATIC_LIST_SERVICE_ID", "")  # 更新環境變數名稱
 }
 
 RAILWAY_API_BASE = "https://api.railway.app/v2"
@@ -95,9 +95,17 @@ with open("fleet_accounting_data.json", "w") as f:
 with open("performance_manager_1_data.json", "w") as f:
     json.dump(data, f)
 
+# 格式化列表機器人
+with open("automatic_list_data.json", "w") as f:
+    json.dump(data, f)
+
 # 車隊總帳機器人
 updater.start_webhook(listen="0.0.0.0", port=PORT, url_path="bot1_webhook")
 updater.bot.set_webhook("https://您的域名/bot1_webhook")
 
 # 業績管家機器人1
-updater.start_webhook(listen="0.0.0.0", port=PORT, url_path="bot2_webhook") 
+updater.start_webhook(listen="0.0.0.0", port=PORT, url_path="bot2_webhook")
+
+# 格式化列表機器人
+updater.start_webhook(listen="0.0.0.0", port=PORT, url_path="bot3_webhook")
+updater.bot.set_webhook("https://您的域名/bot3_webhook") 

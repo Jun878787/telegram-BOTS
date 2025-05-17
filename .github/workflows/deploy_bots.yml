@@ -1,0 +1,273 @@
+name: Deploy Telegram Bots
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Create .env files
+        run: |
+          # 格式化列表機器人
+          echo "TELEGRAM_BOT_TOKEN=7946349508:AAGyixEKL0PCQv6J_F7FNljVnndR1PUE8yg" > Automatic\ List-Bot/.env
+          echo "TARGET_GROUP_ID=-1002557176274" >> Automatic\ List-Bot/.env
+          echo "ADMIN_IDS=7842840472" >> Automatic\ List-Bot/.env
+          echo "PORT=8080" >> Automatic\ List-Bot/.env
+          echo "TZ=Asia/Taipei" >> Automatic\ List-Bot/.env
+          echo "DEBUG=False" >> Automatic\ List-Bot/.env
+          
+          # 車隊總表機器人
+          echo "TELEGRAM_BOT_TOKEN=7205575949:AAHLA8VpXWBJXhPe9riEym6aOaAvojw_UWw" > Fleet\ SummAry-Bot/.env
+          echo "TARGET_GROUP_ID=-1002557176274" >> Fleet\ SummAry-Bot/.env
+          echo "ADMIN_IDS=7842840472" >> Fleet\ SummAry-Bot/.env
+          echo "PORT=8080" >> Fleet\ SummAry-Bot/.env
+          echo "TZ=Asia/Taipei" >> Fleet\ SummAry-Bot/.env
+          echo "DEBUG=False" >> Fleet\ SummAry-Bot/.env
+          
+          # 組別總表機器人
+          echo "TELEGRAM_BOT_TOKEN=7582678588:AAGrU4u06xT8qP-t0L4TZE0BmJf9N44L2Hg" > Performance\ General\ List-Bot/.env
+          echo "TARGET_GROUP_ID=-1002557176274" >> Performance\ General\ List-Bot/.env
+          echo "ADMIN_IDS=7842840472" >> Performance\ General\ List-Bot/.env
+          echo "PORT=8080" >> Performance\ General\ List-Bot/.env
+          echo "TZ=Asia/Taipei" >> Performance\ General\ List-Bot/.env
+          echo "DEBUG=False" >> Performance\ General\ List-Bot/.env
+      
+      - name: Test token connection
+        run: |
+          echo '
+          import telegram
+          import sys
+          import os
+
+          # 測試所有機器人的連接
+          BOT_TOKENS = [
+              "7946349508:AAGyixEKL0PCQv6J_F7FNljVnndR1PUE8yg",  # 格式化列表機器人
+              "7205575949:AAHLA8VpXWBJXhPe9riEym6aOaAvojw_UWw",  # 車隊總表機器人
+              "7582678588:AAGrU4u06xT8qP-t0L4TZE0BmJf9N44L2Hg"   # 組別總表機器人
+          ]
+
+          TARGET_GROUP_ID = "-1002557176274"
+
+          print("開始測試 Telegram 機器人連接...")
+
+          success = False
+          for i, token in enumerate(BOT_TOKENS):
+              bot_name = ["格式化列表機器人", "車隊總表機器人", "組別總表機器人"][i]
+              print(f"\n測試 {bot_name} ({token[:8]}...)")
+              
+              try:
+                  bot = telegram.Bot(token=token)
+                  print("  - 已成功創建機器人對象")
+                  
+                  bot_info = bot.get_me()
+                  print(f"  - 取得機器人資訊: {bot_info.first_name} (@{bot_info.username})")
+                  
+                  print(f"  - 嘗試發送測試消息到群組 {TARGET_GROUP_ID}")
+                  message = bot.send_message(
+                      chat_id=TARGET_GROUP_ID,
+                      text=f"這是來自 {bot_name} 的GitHub部署測試消息。如果您看到此消息，表示機器人連接正常。"
+                  )
+                  print(f"  - 測試消息發送成功! 消息 ID: {message.message_id}")
+                  success = True
+              except Exception as e:
+                  print(f"  - 錯誤: {e}")
+
+          if success:
+              print("\n至少有一個機器人連接成功!")
+              sys.exit(0)
+          else:
+              print("\n所有機器人連接測試失敗。")
+              sys.exit(1)
+          ' > test_connection.py
+          python test_connection.py
+      
+      - name: Create script for running bots
+        run: |
+          cat > run_bots.sh << 'EOL'
+          #!/bin/bash
+          
+          # 啟動所有機器人
+          echo "正在啟動所有機器人..."
+          
+          # 設置環境變數並啟動格式化列表機器人
+          cd "Automatic List-Bot"
+          export $(grep -v '^#' .env | xargs)
+          python bot.py &
+          BOT1_PID=$!
+          echo "格式化列表機器人已啟動，PID: $BOT1_PID"
+          cd ..
+          
+          # 設置環境變數並啟動車隊總表機器人
+          cd "Fleet SummAry-Bot"
+          export $(grep -v '^#' .env | xargs)
+          python bot.py &
+          BOT2_PID=$!
+          echo "車隊總表機器人已啟動，PID: $BOT2_PID"
+          cd ..
+          
+          # 設置環境變數並啟動組別總表機器人
+          cd "Performance General List-Bot"
+          export $(grep -v '^#' .env | xargs)
+          python bot.py &
+          BOT3_PID=$!
+          echo "組別總表機器人已啟動，PID: $BOT3_PID"
+          cd ..
+          
+          # 保存進程ID
+          echo "$BOT1_PID,$BOT2_PID,$BOT3_PID" > bot_pids.txt
+          echo "所有機器人已啟動，PID已保存到 bot_pids.txt"
+          
+          # 等待所有機器人進程
+          wait
+          EOL
+          
+          chmod +x run_bots.sh
+      
+      - name: Create script for stopping bots
+        run: |
+          cat > stop_bots.sh << 'EOL'
+          #!/bin/bash
+          
+          # 停止所有機器人
+          echo "正在停止所有機器人..."
+          
+          # 從文件中讀取PID
+          if [ -f "bot_pids.txt" ]; then
+            IFS=',' read -ra PIDS <<< $(cat bot_pids.txt)
+            for pid in "${PIDS[@]}"; do
+              if ps -p $pid > /dev/null; then
+                kill -15 $pid
+                echo "已停止進程 PID: $pid"
+              else
+                echo "進程 PID: $pid 已不存在"
+              fi
+            done
+            rm bot_pids.txt
+            echo "已刪除PID文件"
+          else
+            echo "找不到PID文件，嘗試查找python進程..."
+            pkill -f "python bot.py"
+            echo "已嘗試停止所有python bot.py進程"
+          fi
+          
+          echo "所有機器人已停止"
+          EOL
+          
+          chmod +x stop_bots.sh
+          
+      - name: Create README 
+        run: |
+          cat > README.md << 'EOL'
+          # Telegram 機器人部署
+
+          這個倉庫包含了三個 Telegram 機器人：
+          1. 格式化列表機器人 (Automatic List-Bot)
+          2. 車隊總表機器人 (Fleet SummAry-Bot)
+          3. 組別總表機器人 (Performance General List-Bot)
+
+          ## 環境變數設置
+
+          每個機器人目錄下都有一個 `.env` 文件，包含以下環境變數：
+          - `TELEGRAM_BOT_TOKEN`: 機器人令牌
+          - `TARGET_GROUP_ID`: 目標群組ID
+          - `ADMIN_IDS`: 管理員ID
+          - `PORT`: 運行端口
+          - `TZ`: 時區設置
+          - `DEBUG`: 調試模式
+
+          ## 在本地運行
+          
+          ### 在 Windows 上運行
+          
+          使用提供的 PowerShell 腳本：
+          
+          ```powershell
+          # 啟動所有機器人
+          .\start_all_bots.ps1
+          
+          # 停止所有機器人
+          .\stop_all_bots.ps1
+          
+          # 單獨啟動格式化列表機器人
+          .\start_list_bot.ps1
+          
+          # 單獨啟動車隊總表機器人
+          .\start_fleet_bot.ps1
+          
+          # 單獨啟動組別總表機器人
+          .\start_performance_bot.ps1
+          ```
+          
+          ### 在 Linux/macOS 上運行
+          
+          使用提供的 bash 腳本：
+          
+          ```bash
+          # 啟動所有機器人
+          ./run_bots.sh
+          
+          # 停止所有機器人
+          ./stop_bots.sh
+          ```
+          
+          ## 在 GitHub 上部署
+          
+          這個倉庫已經設置了 GitHub Actions 工作流程，當推送到 main 或 master 分支時會自動部署。
+          
+          工作流程包括：
+          1. 檢出代碼
+          2. 設置 Python 環境
+          3. 安裝依賴
+          4. 創建環境變數文件
+          5. 測試機器人連接
+          6. 創建運行和停止腳本
+          
+          ## 故障排除
+          
+          如果機器人沒有響應，請檢查：
+          1. 環境變數是否正確設置
+          2. 網絡連接是否正常
+          3. 機器人令牌是否有效
+          4. 機器人是否有權限發送消息到目標群組
+          
+          可以使用 `test_connection.py` 腳本測試機器人連接。
+          EOL
+      
+      - name: Create comprehensive requirements.txt
+        run: |
+          cat > requirements.txt << 'EOL'
+          python-telegram-bot==13.15
+          pyTelegramBotAPI==4.12.0
+          pytz==2023.3
+          requests==2.28.2
+          schedule==1.2.0
+          psutil==5.9.5
+          python-dotenv==1.0.0
+          EOL
+          
+      - name: Setup Git identity
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "Add deployment configurations and scripts"
+          git push 

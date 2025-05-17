@@ -1,0 +1,19 @@
+# 格式化列表機器人 (Automatic List-Bot) 環境變數範例
+TELEGRAM_BOT_TOKEN=7946349508:AAGyixEKL0PCQv6J_F7FNljVnndR1PUE8yg
+
+# Railway API (用於設定啟動/關閉時間)
+RAILWAY_API_KEY=8e48c716-7fd3-4372-afe8-1e3e60c218db
+SERVICE_ID=749549f8-5561-4fc3-b634-3657e2e4c2cf
+
+# 運行端口
+PORT=8080
+
+# 時區設定
+TZ=Asia/Taipei
+
+# 群組與管理員設定
+TARGET_GROUP_ID=-1002557176274
+ADMIN_IDS=7842840472
+
+# 其他配置
+DEBUG=False 
